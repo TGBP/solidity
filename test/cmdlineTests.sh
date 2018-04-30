@@ -163,12 +163,13 @@ TMPDIR=$(mktemp -d)
 (
     set +e
     output=$("$SOLC" --bin  2>&1)
+    result=$?
     set -e
 
-    # Nothing should happen
-    if [ "$output" != "" ] ; then
-		echo 'wrong output is ' $output
-	    exit 1
+	# No input error
+    if [[ !("$output" =~ "No input files given") || ($result == 0) ]] ; then
+		printError "Incorrect response to empty input arg list: $STDERR"
+	exit 1
     fi
 
     set +e
@@ -177,7 +178,7 @@ TMPDIR=$(mktemp -d)
     set -e
 
     # Something should happen
-    if [ "$result" -ne 0 ] ; then
+    if [[ "$result" != 0 ]] ; then
 	    exit 1
     fi
 )

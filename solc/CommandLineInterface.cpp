@@ -448,6 +448,11 @@ bool CommandLineInterface::readInputFilesAndConfigureRemappings()
 		}
 	if (addStdin)
 		m_sourceCodes[g_stdinFileName] = dev::readStandardInput();
+	if (m_sourceCodes.size() == 0)
+	{
+		cerr << "No input files given. If you wish to use the standard input please specify \"-\" explicity." << endl;
+		return false;
+	}
 
 	return true;
 }
@@ -759,9 +764,6 @@ bool CommandLineInterface::processInput()
 		return true;
 	}
 
-	if (!readInputFilesAndConfigureRemappings())
-		return false;
-
 	if (m_args.count(g_argLibraries))
 		for (string const& library: m_args[g_argLibraries].as<vector<string>>())
 			if (!parseLibraryOption(library))
@@ -810,6 +812,9 @@ bool CommandLineInterface::processInput()
 		m_onlyLink = true;
 		return link();
 	}
+
+	if (!readInputFilesAndConfigureRemappings())
+		return false;
 
 	m_compiler.reset(new CompilerStack(fileReader));
 
