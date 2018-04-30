@@ -219,7 +219,7 @@ If you do not want to throw, you can return a pair::
         }
 
         function checkCounter(uint index) public view {
-            var (counter, error) = getCounter(index);
+            (uint counter, bool error) = getCounter(index);
             if (error) {
                 // ...
             } else {
